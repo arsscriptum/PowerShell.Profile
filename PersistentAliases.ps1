@@ -11,7 +11,7 @@
 . "$PSScriptRoot\PersistentFunctions.ps1"
 New-Alias nppa -Value New-PersistentProfileAlias -Scope Global -Force -ErrorAction Stop -Option ReadOnly,AllScope
 
-$RegistryPath = "$ENV:OrganizationHKCU\CodeCastor.PowerShell.ModuleBuilder"
+$RegistryPath = "$ENV:OrganizationHKCU\PowerShell.ModuleBuilder"
 $BuildScript = (Get-ItemProperty $RegistryPath -Name 'BuildScriptPath').BuildScriptPath
 $BuildModuleScript = (Get-ItemProperty $RegistryPath -Name 'BuildModuleScript').BuildModuleScript
 

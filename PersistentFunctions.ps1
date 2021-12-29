@@ -262,18 +262,10 @@ Function Sync-Profile{
     Write-Host "[$LatestFile] copy==> $OlderFile" -f Darkgray;
 }
 
-Function Save-Profile{
-    $SettingsFile = 'C:\Users\radic\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
-    pushd "$Env:Scripts\Automation.SystemConfiguration\Profiles\Powershell"
-    .\Save-Profiles.ps1
-    popd
-    pushd "$Env:Scripts\Automation.SystemConfiguration\Environment"
-    .\Export-UserEnvironment.ps1
-    popd
-
-
+Function Save-TerminalSettings{
+   
     pushd "$Env:Scripts\Automation.SystemConfiguration\Microsoft-Terminal"
-
+    $SettingsFile = 'C:\Users\radic\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
     [string]$DateString = (Get-Date).GetDateTimeFormats()[8]
     [string]$Content = 'Windows Terminal Profile BACKUP'
     [string]$Content += "`n`nBACKUP ON`t$DateString`nFILE     `t$SettingsFile"
@@ -302,6 +294,14 @@ Function Save-Profile{
         Write-Host "[TERMINAL]`t" -f DarkGreen -NoNewLine
         Write-Host "$SettingsFile ==> $CurrentBackup" -f DarkGray
     }
+
+
+}
+
+
+Function Save-Profile{
+    $Path = (Get-Item -Path $Profile).DirectoryName
+    pushd "$Path\Profile"
     $GitExe = 'c:\Programs\Git\bin\git.exe'
     &"$GitExe" commit -a -m 'Latest Profile'
     &"$GitExe" push
@@ -607,14 +607,22 @@ function New-PersistentProfileAlias{
 
 function Script:CommitAllModules([switch]$Compile)
 {
-    pushd 'C:\Scripts\Modules'
+    pushd "$ENV:PSModDev"
     $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nCOMMIT EVERYTHING IN $m`n" ; if($Compile){make -i -d -Documentation ; }; git add *; git commit -a -m 'latest' ; git push ; popd ; }
+    popd
+}
+
+function Script:ImportAllModules()
+{
+    pushd "$ENV:PSModDev"
+    $AllMods = (gci . -Directory).Name ;  $AllMods | % { $m=$_;write-host -f DarkRed "`nIMPORT $m`n" ; import-module $m -Force ; } ; 
+
     popd
 }
 
 function Script:BuildAllModules()
 {
-    pushd 'C:\Scripts\Modules'
+    pushd "$ENV:PSModDev"
     $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; popd ;} ; popd ; 
 }
 
