@@ -13,7 +13,7 @@ function Import-CodeCastorModules{
     try{
         $m = Get-DefaultModulePath
         pushd $m
-        $Modules = (gci . -Directory -Filter 'CodeCastor*').Name
+        $Modules = (gci . -Directory -Filter 'Module*').Name
         ForEach($mod in $Modules){
 
             Write-Host "[IMPORT] " -f DarkRed -NoNewLine

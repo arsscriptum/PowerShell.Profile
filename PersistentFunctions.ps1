@@ -264,13 +264,13 @@ Function Sync-Profile{
 
 Function Save-TerminalSettings{
    
-    pushd "$Env:Scripts\Automation.SystemConfiguration\Microsoft-Terminal"
+    pushd "P:\SystemConfiguration\Microsoft-Terminal"
     $SettingsFile = 'C:\Users\radic\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
     [string]$DateString = (Get-Date).GetDateTimeFormats()[8]
     [string]$Content = 'Windows Terminal Profile BACKUP'
     [string]$Content += "`n`nBACKUP ON`t$DateString`nFILE     `t$SettingsFile"
-    $CurrentBackup = "$Env:Scripts\Automation.SystemConfiguration\Microsoft-Terminal\current_settings\settings.json"
-    $ReadMe = "$Env:Scripts\Automation.SystemConfiguration\Microsoft-Terminal\current_settings\README.md"
+    $CurrentBackup = "P:\SystemConfiguration\Microsoft-Terminal\current_settings\settings.json"
+    $ReadMe = "P:\SystemConfiguration\Microsoft-Terminal\current_settings\README.md"
     New-Item -Path $ReadMe -ItemType File -Force -EA Ignore | Out-Null
     Remove-Item -Path $ReadMe -Force | Out-Null    
     Set-Content -Path $ReadMe -Value $Content

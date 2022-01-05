@@ -15,10 +15,10 @@ function Get-CommandsAndAliases{
     pushd "$env:pwshtools"
     PrintCmdPromptTitle 'COMMANDS LIST IN ' $MyModule
 
-    get-command  | where source -match 'CodeCastor' | Select Name | fw -Column 4
+    get-command  | where source -match 'PowerShell.Module' | Select Name | fw -Column 4
 
     PrintCmdPromptTitle 'Aliases LIST IN ' $MyModule
 
-    get-alias  | where source -match 'CodeCastor' | Select Name|  fw -Column 4
+    get-alias  | where source -match 'PowerShell.Module' | Select Name|  fw -Column 4
     popd
 }
