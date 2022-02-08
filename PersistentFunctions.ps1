@@ -361,16 +361,16 @@ function Get-FolderHash{
 Function Set-EnvironmentVariable{
         param(
         [parameter(mandatory=$true)]
-        [String]
-        $Name,
+        [String]$Name,
         [parameter(mandatory=$true)]
-        [String]
-        $Value
+        [String]$Value,
+        [parameter(mandatory=$true)]
+        [ValidateSet('User', 'Machine', 'Session')]
+        [String]$Scope
         )
-    $Scope=GetScope
     switch($Scope)
     {
-        0 { 
+        'Session' { 
             $CurrentSetting=( Get-ChildItem -Path env: -Recurse | % -process { if($_.Name -eq $Name) {$_.Value} })
          
             if(($CurrentSetting -eq $null) -Or ($CurrentSetting -ne $null -And $CurrentSetting.Value -ne $Value)){
@@ -382,11 +382,11 @@ Function Set-EnvironmentVariable{
                 Remove-PSDrive $TempPSDrive -Force | Out-null
             }
       }
-        1 { 
+        'User' { 
             Write-Host "Setting $Name --> $Value [User]"  -ForegroundColor Yellow
             [System.Environment]::SetEnvironmentVariable($Name,$Value,[System.EnvironmentVariableTarget]::User)
           }
-        2 { 
+        'Machine' { 
             Write-Host "Setting $Name --> $Value [Machine]"  -ForegroundColor Yellow
             [System.Environment]::SetEnvironmentVariable($Name,$Value,[System.EnvironmentVariableTarget]::Machine)
         }
@@ -623,7 +623,7 @@ function Script:ImportAllModules()
 function Script:BuildAllModules()
 {
     pushd "$ENV:PSModDev"
-    $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; popd ;} ; popd ; 
+    $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -n -f DarkRed "`nBuilding $m..." ; $output=make -i -d ; ;write-host -f DarkGreen "`t`tDone!`n" ; popd ;} ; popd ; 
 }
 
 function Script:BuildModule{
