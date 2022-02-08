@@ -453,7 +453,7 @@ function Show-SystemInfo
 function Show-Header
 {
     Write-Host "`n`n"
-    Write-Host "                                       ⼕龱ᗪ㠪⼕闩丂ㄒ龱尺 ᗪ㠪ᐯ㠪㇄龱尸爪㠪𝓝ㄒ" -f DarkRed
+    Write-Host "                                         𝒜𝓇𝓈 𝒮𝒸𝓇𝒾𝓅𝓉𝓊𝓂: 𝒯𝒽ℯ 𝒜𝓇𝓉 ℴ𝒻 𝒞ℴ𝒹ℯ" -f DarkRed
     Write-Host "                                       𝘸𝘪𝘯𝘥𝘰𝘸𝘴 𝘵𝘦𝘳𝘮𝘪𝘯𝘢𝘭 - 𝘱𝘰𝘸𝘦𝘳𝘴𝘩𝘦𝘭𝘭 - 𝘥𝘰𝘴 - 𝘷𝘴" -f DarkRed
     Write-Host "`n`n"
     Write-Host "𝑡𝑦𝑝𝑒 ＇𝑠𝑦𝑠𝑖𝑛𝑓𝑜＇ 𝑓𝑜𝑟 𝑠𝑦𝑠𝑡𝑒𝑚 𝑑𝑒𝑡𝑎𝑖𝑙𝑠" -f DarkRed
@@ -633,8 +633,22 @@ function Script:BuildModule{
         [Parameter(Mandatory=$true,ValueFromPipeline=$true, HelpMessage="Full repository Url https or ssh") ]
         [String]$Name
     ) 
-    pushd 'C:\Scripts\Modules'
-    $AllMods = (gci . -Directory -Filter "*$Name*").Fullname ; Write-Host "WILL BUILD:" -f DarkRed ;  $AllMods | % { $m=$_; $nn = (Get-Item $m).Name ;Write-Host " ===> $nn" -f DarkYellow ;  } ; sleep 3 ;$AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; popd ;} ; popd ; 
+    pushd "$ENV:PSModDev"
+    $BuildMod = [System.Collections.ArrayList]::new()
+    $AllMods = @(gci . -Directory).Fullname ; 
+    ForEach($mod in $AllMods){
+        if($mod -match $Name){
+            Write-Host -n "Found " -f DarkRed ;
+            Write-Host "$mod" -f DarkYellow ;
+            $Null=$BuildMod.Add($mod)
+        }
+    }
+    $modcount = $BuildMod.Count
+    if($modcount -gt 0){
+        Write-Host "Building those modules: " -f DarkYellow ;
+        $BuildMod | % { $m=$_; $nn = (Get-Item $m).Name ;Write-Host " ===> $nn" -f DarkYellow ;  } ; sleep 3 ;$BuildMod | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; popd ;} ; popd ;     
+    }
+    
 }
  
  
