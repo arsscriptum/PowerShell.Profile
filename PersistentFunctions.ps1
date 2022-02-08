@@ -605,14 +605,14 @@ function New-PersistentProfileAlias{
 # Builders
 #===============================================================================
 
-function Script:CommitAllModules([switch]$Compile)
+function CommitAllModules([switch]$Compile)
 {
     pushd "$ENV:PSModDev"
     $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nCOMMIT EVERYTHING IN $m`n" ; if($Compile){make -i -d -Documentation ; }; git add *; git commit -a -m 'latest' ; git push ; popd ; }
     popd
 }
 
-function Script:ImportAllModules()
+function ImportAllModules()
 {
     pushd "$ENV:PSModDev"
     $AllMods = (gci . -Directory).Name ;  $AllMods | % { $m=$_;write-host -f DarkRed "`nIMPORT $m`n" ; import-module $m -Force ; } ; 
@@ -620,18 +620,19 @@ function Script:ImportAllModules()
     popd
 }
 
-function Script:BuildAllModules()
+function BuildAllModules()
 {
     pushd "$ENV:PSModDev"
     $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -n -f DarkRed "`nBuilding $m..." ; $output=make -i -d ; ;write-host -f DarkGreen "`t`tDone!`n" ; popd ;} ; popd ; 
 }
 
-function Script:BuildModule{
+function BuildModule{
     [CmdletBinding(SupportsShouldProcess)]
     Param
     (
         [Parameter(Mandatory=$true,ValueFromPipeline=$true, HelpMessage="Full repository Url https or ssh") ]
-        [String]$Name
+        [String]$Name,
+        [switch]$Commit
     ) 
     pushd "$ENV:PSModDev"
     $BuildMod = [System.Collections.ArrayList]::new()
@@ -646,10 +647,11 @@ function Script:BuildModule{
     $modcount = $BuildMod.Count
     if($modcount -gt 0){
         Write-Host "Building those modules: " -f DarkYellow ;
-        $BuildMod | % { $m=$_; $nn = (Get-Item $m).Name ;Write-Host " ===> $nn" -f DarkYellow ;  } ; sleep 3 ;$BuildMod | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; popd ;} ; popd ;     
+        $BuildMod | % { $m=$_; $nn = (Get-Item $m).Name ;Write-Host " ===> $nn" -f DarkYellow ;  } ; sleep 3 ;$BuildMod | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; if($Commit){push; }; popd ;} ; popd ;     
     }
     
 }
+ 
  
  
 function ProfileInfo
