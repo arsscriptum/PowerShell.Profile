@@ -23,6 +23,7 @@ nppa makeall    "$BuildModuleScript"           'na'
 #===============================================================================
 nppa profile     Edit-Profile                   'na'
 nppa prompt      Show-Prompt                    'na'
+#nppa prompt      Show-PromptNoPath              'na'
 nppa tmp         goto-tmp                       'Create a temporary directory and go to this location to do some tests'
 nppa whereis     Get-ApplicationPath            'Where is the Executable located? '
 nppa Setenv      Set-EnvironmentVariable        'Set Environment Value !'

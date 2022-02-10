@@ -1,3 +1,9 @@
+<#
+  ╓──────────────────────────────────────────────────────────────────────────────────────
+  ║   PowerShell Profile
+  ╙──────────────────────────────────────────────────────────────────────────────────────
+ #>
+
 
 
 #===============================================================================
@@ -394,8 +400,21 @@ Function Set-EnvironmentVariable{
     }
 }
 
-
- 
+function Show-PromptNoPath{
+    $currentpath=(Get-Location).Path
+    $IsAdmin=Invoke-IsAdministrator 
+    if($PSVersionTable.PSVersion.Major -eq 5){
+        Write-Host ("ˡᵉᵍᵃᶜʸ⁵") -nonewline -foregroundcolor DarkCyan
+        if($IsAdmin){write-host "ᵃᵈᵐⁱⁿ" -f Darkred -nonewline}
+    }else {
+        Write-Host ("ᶜᵒʳᵉ⁷") -nonewline -foregroundcolor DarkCyan
+        #Write-Host ("cͨoͦrͬeͤ7") -nonewline -foregroundcolor DarkCyan
+        if($IsAdmin){write-host "ᵃᵈᵐⁱⁿ" -f Darkred -nonewline}
+    }
+    
+    Write-Host (" >") -nonewline -foregroundcolor DarkGray
+    return " "
+}
 
 function Show-Prompt{
     $currentpath=(Get-Location).Path
@@ -414,8 +433,26 @@ function Show-Prompt{
 }
 
 
-
-
+function Set-SmallPrompt{
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    try{
+        Write-Host "New-Alias 'prompt' Show-PromptNoPath -force -Scope Global -option allscope" -f Darkred
+        New-Alias 'prompt' Show-PromptNoPath -force -Scope Global -option allscope
+    }catch{
+        write-Warning -Message "$_"
+    }  
+}
+function Reset-Prompt{
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    try{
+        Write-Host "New-Alias 'prompt' Show-Prompt -force -Scope Global -option allscope" -f Darkred
+        New-Alias 'prompt' Show-Prompt -force -Scope Global -option allscope
+    }catch{
+        write-Warning -Message "$_"
+    }  
+}
 
 function Show-ExtendedInfo
 {
@@ -452,14 +489,15 @@ function Show-SystemInfo
 
 function Show-Header
 {
+    cls
     Write-Host "`n`n"
     Write-Host "                                         𝒜𝓇𝓈 𝒮𝒸𝓇𝒾𝓅𝓉𝓊𝓂: 𝒯𝒽ℯ 𝒜𝓇𝓉 ℴ𝒻 𝒞ℴ𝒹ℯ" -f DarkRed
     Write-Host "                                       𝘸𝘪𝘯𝘥𝘰𝘸𝘴 𝘵𝘦𝘳𝘮𝘪𝘯𝘢𝘭 - 𝘱𝘰𝘸𝘦𝘳𝘴𝘩𝘦𝘭𝘭 - 𝘥𝘰𝘴 - 𝘷𝘴" -f DarkRed
     Write-Host "`n`n"
-    Write-Host "𝑡𝑦𝑝𝑒 ＇𝑠𝑦𝑠𝑖𝑛𝑓𝑜＇ 𝑓𝑜𝑟 𝑠𝑦𝑠𝑡𝑒𝑚 𝑑𝑒𝑡𝑎𝑖𝑙𝑠" -f DarkRed
-    Write-Host "𝑡𝑦𝑝𝑒 ❜𝒄𝒎𝒅𝒍𝒊𝒔𝒕❜ 𝑓𝑜𝑟 𝒂 𝒍𝒊𝒔𝒕 𝒐𝒇 𝒑𝒐𝒔𝒔𝒊𝒃𝒍𝒆 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔" -f DarkRed
-    Write-Host '𝑡𝑦𝑝𝑒 "$Global:NETInfoTable" 𝑓𝑜𝑟 network information' -f DarkRed
-    Write-Host "`n`n"                                                                                   
+    #Write-Host "𝑡𝑦𝑝𝑒 ＇𝑠𝑦𝑠𝑖𝑛𝑓𝑜＇ 𝑓𝑜𝑟 𝑠𝑦𝑠𝑡𝑒𝑚 𝑑𝑒𝑡𝑎𝑖𝑙𝑠" -f DarkRed
+    #Write-Host "𝑡𝑦𝑝𝑒 ❜𝒄𝒎𝒅𝒍𝒊𝒔𝒕❜ 𝑓𝑜𝑟 𝒂 𝒍𝒊𝒔𝒕 𝒐𝒇 𝒑𝒐𝒔𝒔𝒊𝒃𝒍𝒆 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔" -f DarkRed
+    #Write-Host '𝑡𝑦𝑝𝑒 "$Global:NETInfoTable" 𝑓𝑜𝑟 network information' -f DarkRed
+    #Write-Host "`n`n"                                                                                   
 }
 
 

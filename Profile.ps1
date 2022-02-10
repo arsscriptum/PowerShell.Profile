@@ -4,6 +4,47 @@
 #>
 
 
+function TypeFunction([string]$Function)
+{
+    $Script = (Get-Item function:$Function).ScriptBlock
+    write-host -n -f DarkYellow "Function " ; 
+    write-host -f DarkRed " $Function" ;
+    write-host -f DarkRed "<begin>" ; 
+    write-host -f DarkYellow "$Script" ;
+    write-host -f DarkRed "<end>" ; 
+}
+function Get-LocalSigningCert{
+    $Instance=dir Cert:\CurrentUser\My -CodeSigningCert | where Thumbprint -eq '5784C51A025A7E42DD96B95D8F54AA240BE4C98E'
+    return $Instance
+}
+
+function SignScript([string]$Path)
+{
+    # https://www.darkoperator.com/blog/2013/3/5/powershell-basics-execution-policy-part-1.html
+    $cert = Get-LocalSigningCert
+    Write-Host "✅ Get Signing Certificate"
+    $Res = Set-AuthenticodeSignature $Path -Certificate $cert 
+    $Status = $Res.Status
+    $StatusMessage = $Res.StatusMessage
+    Write-Host "✅ Set-AuthenticodeSignature on $Path"
+    Write-Host "✅ $Status"
+    Write-Host "✅ $StatusMessage"
+}
+
+function New-RepositoryShortcut([string]$name)
+{   
+    Write-Host "✅ Go in $ENV:DevelopmentRoot"
+    pushd "$ENV:DevelopmentRoot"
+    New-Repository "$name" ; 
+    pushd "$ENV:DevelopmentRoot\$name"
+    $a=read-host 'Press (y) to invoke Invoke-GitSaveNewRepo'
+    if($a -eq 'y'){
+        Invoke-GitSaveNewRepo
+        Write-Host "✅ Invoke-GitSaveNewRepo"
+    }
+    popd
+    popd
+}
 
 
 function Get-PSProfileDevelopmentRoot{
@@ -15,7 +56,7 @@ function Get-PSProfileDevelopmentRoot{
         }
     }else{
         $TmpPath = (Get-Item $Profile).DirectoryName
-        $TmpPath = Join-Path $PsProfileDevRoot 'Profile'
+        $TmpPath = Join-Path $TmpPath 'Profile'
         if(Test-Path $TmpPath -PathType Container){
             $PsProfileDevRoot = $TmpPath
             return $PsProfileDevRoot
@@ -27,7 +68,40 @@ function Get-PSProfileDevelopmentRoot{
     return $PsProfileDevRoot
 }
 
-$Global:PsProfileDevRoot = Get-PSProfileDevelopmentRoot
+
+function Invoke-GitSaveNewRepo{
+    git add * ; git commit -a -m 'first' ;  git push  --set-upstream origin master
+}
+ 
+function Invoke-Lettoufeur{
+    Write-Host "-----------------------------------" -f DarkBlue
+    Write-Host "Invoking lettoufeur.exe" -f Cyan
+    Write-Host "-----------------------------------" -f DarkBlue
+    $ScriptString =  @'
+    $EttoufeurExe = "$Env:ToolsRoot\lettoufeur.exe";
+    &"$EttoufeurExe";
+'@
+    $ScriptBlock = [scriptblock]::create($ScriptString)
+    $JobData = Start-Job -Command $ScriptBlock
+    $Data1 = $JobData.Id
+    $Data2 = $JobData.Name
+    $Data3 = $JobData.PSJobTypeName
+    $Data4 = $JobData.State
+    $Obj =  [PSCustomObject]@{
+        Id = $Data1
+        Name = $Data2
+        Type = $Data3
+        Status = $Data4
+    }
+    Set-Variable -Name 'EttoufeurJobId' -Value $Data1 -Scope Global -Option readonly, allscope
+    $HashTable = ConvertTo-Json $Obj | ConvertFrom-Json -AsHashtable
+    return $HashTable
+}
+
+function Invoke-KillLettoufeur{
+ Stop-Job $Global:EttoufeurJobId
+}
+
 
 
 
@@ -58,25 +132,6 @@ $Script:ProfileIncPath        = Join-Path $Script:PsProfileDevRoot "private"
             Write-Error -Message "Failed to import file $file $_"
         }
     }
-<#
-PrintCmdPromptTitle 'LOADING DEPENDENCIES' 'MODULES AND FUNCTIONS'
-Import-Module $ENV:ModuleCore -Force -ErrorAction Ignore
-$res=(Get-Module $ENV:ModuleCore -ErrorAction Ignore)
-if($res -eq $null){ 
-    Write-Warning -Message "Failed to Load $ENV:ModuleCore"
-    $Global:ProfileErrors++ 
-}else{
-    Write-Host -f Green "[OK] " -NoNewline
-    Write-Host " +  Module $ENV:ModuleCore LOADED" -f Gray
-}#>
-
-#Invoke-LoadProfileDependencies
-#Register-Assemblies
-#Import-CodeCastorModules
-#$Update-SessionEnvironmentVariables
-
-#Start-Job -ScriptBlock {UpdateNetInfo} | Out-null
-
 
 
 New-Alias -name ex -Value "x"
@@ -89,6 +144,7 @@ Get-PowershellVersionInfo
 
 Get-TerminalStartingDirectory -SetLocation
 return 
+
 $Notifier="C:\Programs\SystemTools\Notifier.exe"
 
 &"$Notifier" "Windows Machine Learning for Desktop (C++) tutorial"
@@ -98,6 +154,5 @@ s "https://www.youtube.com/watch?v=8GoYXWOq55A"
 s "https://www.youtube.com/watch?v=9tLWj7iOiP8"
 
 
-#Get-MissionImpossible
 
  
