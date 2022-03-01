@@ -305,11 +305,34 @@ Function Save-TerminalSettings{
 }
 
 
+function GitExecutable{
+    [CmdletBinding(SupportsShouldProcess)]
+    param ()
+    $GitPath = (get-command "git.exe" -ErrorAction Ignore).Source
+     
+     if(( $GitPath -ne $null ) -And (Test-Path -Path $GitPath)){
+        return $GitPath
+     }
+     $GitPath = (Get-ItemProperty -Path "HKLM:\SOFTWARE\GitForWindows" -Name 'InstallPath' -ErrorAction Ignore).InstallPath
+     if( $GitPath -ne $null ) { $GitPath = $GitPath + '\bin\git.exe' }
+     if(Test-Path -Path $GitPath){
+        return $GitPath
+     }
+     $GitPath = (Get-ItemProperty -Path "$ENV:OrganizationHKCU\Git" -Name 'InstallPath' -ErrorAction Ignore).InstallPath
+     if( $GitPath -ne $null ) { $GitPath = $GitPath + '\bin\git.exe' }
+     if(( $GitPath -ne $null ) -And (Test-Path -Path $GitPath)){
+        return $GitPath
+     }
+}
+
 Function Save-Profile{
     $Path = (Get-Item -Path $Profile).DirectoryName
+	Write-ChannelMessage "GOING INT $Path"
     pushd "$Path\Profile"
-    $GitExe = 'c:\Programs\Git\bin\git.exe'
-    &"$GitExe" commit -a -m 'Latest Profile'
+    $GitExe = GitExecutable
+	$Msg = 'Latest Profile, commited on ' + (Get-Date).GetDateTimeFormats()[6]
+	Write-ChannelMessage "GIT PUSH...."
+    &"$GitExe" commit -a -m "$Msg"
     &"$GitExe" push
     popd
 }
