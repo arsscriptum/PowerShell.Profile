@@ -525,8 +525,13 @@ function Invoke-LoadProfileDependencies{
     }
 }
 
-
-
+<#
+Setenv -Name 'PSModComp' -Value 'c:\DOCUMENTS\PowerShell\Module-Development\PowerShell.Module.Compiler' -Scope 'Machine'
+Setenv -Name 'ScriptsRoot' -Value 'P:\Scripts' -Scope 'Machine'
+Setenv -Name 'PowerShellScriptsDev' -Value 'P:\Scripts' -Scope 'Machine'
+Setenv -Name 'Sandbox' -Value 'P:\Scripts\PowerShell.Sandbox' -Scope 'Machine'
+Setenv -Name 'moddev' -Value 'c:\DOCUMENTS\PowerShell\Module-Development' -Scope 'User'
+#>
 
 function goto-tmp           {  Push-Location ( (New-TemporaryDirectory).Fullname ) ; }
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
@@ -539,12 +544,17 @@ function goto-tools         {  Write-Host "Pushd => $env:ToolsRoot" ; Push-Locat
 function goto-sandbox       {  Write-Host "Pushd => $env:Sandbox" ; Push-Location $env:Sandbox; }
 function goto-wwwroot       {  Write-Host "Pushd => $env:wwwroot" ; Push-location $env:wwwroot; }
 function goto-PSModCore     {  Write-Host "Pushd => $env:PSModCore" ; Push-location $env:PSModCore; }
+function goto-PSModComp     {  Write-Host "Pushd => $env:PSModComp" ; Push-location $env:PSModComp; }
+function goto-moddev     {  Write-Host "Pushd => $env:moddev" ; Push-location $env:moddev; }
 function goto-PSModGithub     {  Write-Host "Pushd => $env:PSModGithub" ; Push-location $env:PSModGithub; }
 function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" ; Push-location $env:PSModuleBuilder; }
 function goto-modpath       {  $p=Get-UserModulesPath; Set-location $p; }
 function Invoke-Screenshot      { start-process "${Env:ToolsRoot}\screenshot.exe" -WindowStyle hidden ; }
 function Invoke-Sublime         { &"${Env:Programs}\SublimeText3\sublime_text.exe" $args }
+function Invoke-Notepad         { &"C:\Programs\Shims\npad.exe" $args }
 function Invoke-Baretail        { $bt=(get-command baretail).Source;&"$bt" $args }
+function Invoke-Terminal0 { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 nt" ; }
+function Invoke-T0Split { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 split-pane" ; }
 function Invoke-Terminal { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 1 nt" ; }
 function Invoke-TerminalAdmin { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 1 nt" -verb RunAs}
 
@@ -562,14 +572,14 @@ function Edit-Profile{
 
     )       
     Write-Host "EDITING PROFILE ==> $Profile" -f Blue 
-    Invoke-Sublime $Profile
+    Invoke-Notepad $Profile
     if($All -eq $False) { return }
     $Directory=(Get-Item -Path $Profile).DirectoryName
     $Directory=Join-Path $Directory 'inc'
     $Dependencies = (gci $Directory -File -Filter '*.ps1').FullName
     ForEach($Dep in $Dependencies){
         Write-Host "EDITING DEPEMDENCY ==> $Dep" -f Cyan 
-        Invoke-Sublime $Dep
+        Invoke-Notepad $Dep
     }
 }
 
@@ -638,84 +648,3 @@ function New-PersistentProfileAlias{
     }
     
 }
-
-#===============================================================================
-# Builders
-#===============================================================================
-
-function CommitAllModules([switch]$Compile)
-{
-    pushd "$ENV:PSModDev"
-    $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -f DarkRed "`nCOMMIT EVERYTHING IN $m`n" ; if($Compile){make -i -d -Documentation ; }; git add *; git commit -a -m 'latest' ; git push ; popd ; }
-    popd
-}
-
-function ImportAllModules()
-{
-    pushd "$ENV:PSModDev"
-    $AllMods = (gci . -Directory).Name ;  $AllMods | % { $m=$_;write-host -f DarkRed "`nIMPORT $m`n" ; import-module $m -Force ; } ; 
-
-    popd
-}
-
-function BuildAllModules()
-{
-    pushd "$ENV:PSModDev"
-    $AllMods = (gci . -Directory).Fullname ;  $AllMods | % { $m=$_;pushd $m;write-host -n -f DarkRed "`nBuilding $m..." ; $output=make -i -d ; ;write-host -f DarkGreen "`t`tDone!`n" ; popd ;} ; popd ; 
-}
-
-function BuildModule{
-    [CmdletBinding(SupportsShouldProcess)]
-    Param
-    (
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true, HelpMessage="Full repository Url https or ssh") ]
-        [String]$Name,
-        [switch]$Commit
-    ) 
-    pushd "$ENV:PSModDev"
-    $BuildMod = [System.Collections.ArrayList]::new()
-    $AllMods = @(gci . -Directory).Fullname ; 
-    ForEach($mod in $AllMods){
-        if($mod -match $Name){
-            Write-Host -n "Found " -f DarkRed ;
-            Write-Host "$mod" -f DarkYellow ;
-            $Null=$BuildMod.Add($mod)
-        }
-    }
-    $modcount = $BuildMod.Count
-    if($modcount -gt 0){
-        Write-Host "Building those modules: " -f DarkYellow ;
-        $BuildMod | % { $m=$_; $nn = (Get-Item $m).Name ;Write-Host " ===> $nn" -f DarkYellow ;  } ; sleep 3 ;$BuildMod | % { $m=$_;pushd $m;write-host -f DarkRed "`nBUILD EVERYTHING IN $m`n" ; make -i -d ; if($Commit){push; }; popd ;} ; popd ;     
-    }
-    
-}
- 
- 
- 
-function ProfileInfo
-{
-    Write-Host '𝙇𝙤𝙘𝙖𝙡 𝙝𝙤𝙨𝙩   :' -NoNewLine -ForegroundColor DarkYellow
-    Write-Host "$env:computername" -ForegroundColor DarkRed
-    Write-Host "𝙇𝙤𝙜𝙜𝙚𝙙 𝙞𝙣 𝙖𝙨 :" -NoNewLine -ForegroundColor DarkYellow
-    Write-Host "$env:username" -ForegroundColor DarkRed
-    Write-Host "𝙀𝙭𝙩𝙚𝙧𝙣𝙖𝙡 𝙞𝙥  :" -NoNewLine -ForegroundColor DarkYellow
-    Write-Host "$ExternalIpAddress" -ForegroundColor DarkRed
-    Write-Host "𝑻𝒓𝒂𝒏𝒔𝒄𝒓𝒊𝒑𝒕   :" -NoNewLine -ForegroundColor DarkYellow
-    Write-Host "$Transcript`n" -ForegroundColor DarkRed
-}
-
-
-function PrintCmdPromptTitle{
-    [CmdletBinding(SupportsShouldProcess)]
-    Param
-    (
-        [Parameter(Mandatory=$true)]
-        [string]$Title,
-        [Parameter(Mandatory=$true)]
-        [string]$Details
-    )
-    Write-Host "`n`n`n`t`t===============================================================================" -f DarkRed
-    Write-Host "`t`t`t`t`t$Title`n`t`t`t`t`t$Details" -f DarkYellow
-    Write-Host "`t`t===============================================================================" -f DarkRed
-}
-
