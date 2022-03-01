@@ -328,6 +328,9 @@ function GitExecutable{
 Function Save-Profile{
     $Path = (Get-Item -Path $Profile).DirectoryName
 	Write-ChannelMessage "GOING INT $Path"
+	ForEach($f in (gci . -file -recurse -filter '*.ps1').Fullname){
+		Write-ChannelMessage "SCRIPT: $f"
+	}
     pushd "$Path\Profile"
     $GitExe = GitExecutable
 	$Msg = 'Latest Profile, commited on ' + (Get-Date).GetDateTimeFormats()[6]
