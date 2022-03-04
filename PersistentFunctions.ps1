@@ -453,9 +453,15 @@ function Show-Prompt{
         Write-Host ("ˡᵉᵍᵃᶜʸ⁵") -nonewline -foregroundcolor DarkCyan
         if($IsAdmin){write-host "ᵃᵈᵐⁱⁿ" -f Darkred -nonewline}
     }else {
-        Write-Host ("ᶜᵒʳᵉ⁷") -nonewline -foregroundcolor DarkCyan
-        #Write-Host ("cͨoͦrͬeͤ7") -nonewline -foregroundcolor DarkCyan
-        if($IsAdmin){write-host "ᵃᵈᵐⁱⁿ" -f Darkred -nonewline}
+			
+        
+        
+        if($IsAdmin){
+			Write-Host ("ᶜᵒʳᵉ⁷") -nonewline -foregroundcolor DarkYellow
+			write-host " < ᵃᵈᵐⁱⁿ > " -f Darkred -nonewline
+		}else{
+			Write-Host ("ᶜᵒʳᵉ⁷") -nonewline -foregroundcolor DarkCyan
+		}
     }
     
     Write-Host ("$currentpath>") -nonewline -foregroundcolor DarkGray
@@ -580,7 +586,7 @@ function goto-PSModGithub     {  Write-Host "Pushd => $env:PSModGithub" ; Push-l
 function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" ; Push-location $env:PSModuleBuilder; }
 function goto-modpath       {  $p=Get-UserModulesPath; Set-location $p; }
 function Invoke-Screenshot      { start-process "${Env:ToolsRoot}\screenshot.exe" -WindowStyle hidden ; }
-function Invoke-Sublime         { &"${Env:Programs}\SublimeText3\sublime_text.exe" $args }
+function Invoke-Sublime         { &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" $args }
 function Invoke-Notepad         { &"C:\Programs\Shims\npad.exe" $args }
 function Invoke-Baretail        { $bt=(get-command baretail).Source;&"$bt" $args }
 function Invoke-Terminal0 { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 nt" ; }

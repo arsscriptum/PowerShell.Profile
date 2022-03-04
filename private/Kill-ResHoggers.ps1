@@ -10,7 +10,7 @@
 
 
 function Kill-ResHoggers{
-    Write-Host "`n`t`t𝓇ℯ𝓈ℴ𝓊𝓇𝒸ℯ𝓈 𝒽ℴℊℊℯ𝓇 𝓀𝒾𝓁𝓁ℯ𝓇`n`t`t-----------------------" -f DarkCyan
+    Write-Host "`n`t`tKill Resource Hogger`n`t`t-----------------------" -f DarkCyan
     [string]$Killer=(get-command pskill).Source
 
     if($global:phoggers -eq $null){
@@ -21,7 +21,7 @@ function Kill-ResHoggers{
     ForEach($p in $Processes){
         $plen=$p.length
         
-        Write-Host "𝓀𝒾𝓁𝓁𝒾𝓃ℊ  $p" -f Cyan -NoNewLine
+        Write-Host "Killing  $p" -f Cyan -NoNewLine
         $Res=&$Killer $p
         if($plen -gt 15){
             Write-Host "`t`t[ᴏᴋ]" -f Green
@@ -31,8 +31,8 @@ function Kill-ResHoggers{
             Write-Host "`t`t`t`t[ᴏᴋ]" -f Green
         }
     }
+    Write-Host "`nDone. $Global:phoggers.Add`n" -f DarkYellow
 
-    Write-Host "`n𝘿𝙤𝙣𝙚. 𝙏𝙤 𝙖𝙙𝙙 𝙖 𝙋𝙧𝙤𝙘𝙚𝙨𝙨 𝙩𝙤 𝙠𝙞𝙡𝙡 𝙡𝙞𝙨𝙩: $𝙜𝙡𝙤𝙗𝙖𝙡:𝙥𝙝𝙤𝙜𝙜𝙚𝙧𝙨.𝘼𝙙𝙙`n" -f DarkYellow
 }
 
 function  Kill-ResHoggersAdmin{
@@ -49,7 +49,7 @@ function  Kill-ResHoggersAdmin{
     <#
     ForEach($p in $Processes){
         $plen=$p.length
-        Write-Host "𝓀𝒾𝓁𝓁𝒾𝓃ℊ  $p" -f Cyan -NoNewLine
+        Write-Host "Killing  $p" -f Cyan -NoNewLine
         $Res=&$Killer $p
         if($plen -gt 15){
             Write-Host "`t`t[ᴏᴋ]" -f Green
@@ -61,7 +61,7 @@ function  Kill-ResHoggersAdmin{
     }
     #>
 
-    Write-Host "𝓀𝒾𝓁𝓁𝒾𝓃ℊ  $ArgumentsPs" -f Cyan -NoNewLine
+    Write-Host "Killing  $ArgumentsPs" -f Cyan -NoNewLine
     Start-Process -FilePath $Killer -ArgumentList $ArgumentsPs -NoNewWindow
     Sleep 5
 '

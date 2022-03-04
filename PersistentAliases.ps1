@@ -50,7 +50,7 @@ nppa www         goto-wwwroot                   'Set Location To $env:wwwroot !'
 nppa moddev      goto-moddev                    'na'
 nppa mydocs      goto-mydocuments               'na'
 nppa doc         goto-mydocuments               'na'
-
+nppa gmod        Set-LocationToModule           'Set Location To specified module name !'
 nppa pt          goto-PSModCore                 'Set Location To $env:PSModCore !'
 nppa psmodcore   goto-PSModCore                 'Set Location To $env:PSModCore !'
 nppa psmodgit    goto-PSModGithub               'Set Location To $env:PSModGithub !'
