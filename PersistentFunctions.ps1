@@ -600,7 +600,7 @@ function goto{
     )
 
 
-    $options = @('tmp', 'mydocument', 'code', 'dev', 'home', 'psdev', 'scripts', 'tools', 'sandbox', 'wwwroot', 'PSModCore', 'PSModComp', 'moddev', 'Github', 'Builder', 'modpath')
+    $options = @('profile','tmp', 'mydocument', 'code', 'dev', 'home', 'psdev', 'scripts', 'tools', 'sandbox', 'wwwroot', 'PSModCore', 'PSModComp', 'moddev', 'Github', 'Builder', 'modpath')
     Switch ($Location) {
         profile         { goto-profile ;    Break ; }
         tmp             { goto-tmp ;    Break ; }
