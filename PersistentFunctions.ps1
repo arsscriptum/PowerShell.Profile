@@ -537,6 +537,28 @@ function Show-Header
 }
 
 
+function Import-AllDevelopmentModules{
+    try{
+        $m = 'C:\DOCUMENTS\PowerShell\Module-Development'
+        pushd $m
+        $Modules = (gci . -Directory -Filter 'PowerShell.Module.*').Name
+        ForEach($mod in $Modules){
+
+            Write-Host "[IMPORT] " -f DarkRed -NoNewLine
+            Write-Host " import modules $mod..............`t`t" -f DarkGray -NoNewLine
+            $null = Import-Module $mod -DisableNameChecking -Scope Global -Force -ErrorAction Ignore
+            Write-Host "[OK]" -f DarkGreen
+        }
+		
+    }catch [Exception]{
+        $Msg="LOADER Error: $($PSItem.ToString())"
+        Write-Error $Msg
+    }finally{
+		popd
+	}
+}
+
+
 #===============================================================================
 # Dependencies
 #===============================================================================
@@ -569,6 +591,52 @@ Setenv -Name 'Sandbox' -Value 'P:\Scripts\PowerShell.Sandbox' -Scope 'Machine'
 Setenv -Name 'moddev' -Value 'c:\DOCUMENTS\PowerShell\Module-Development' -Scope 'User'
 #>
 
+function goto{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="Location, help for list")]
+        [ValidateNotNullOrEmpty()]
+        [String]$Location
+    )
+
+
+    $options = @('tmp', 'mydocument', 'code', 'dev', 'home', 'psdev', 'scripts', 'tools', 'sandbox', 'wwwroot', 'PSModCore', 'PSModComp', 'moddev', 'Github', 'Builder', 'modpath')
+    Switch ($Location) {
+        profile         { goto-profile ;    Break ; }
+        tmp             { goto-tmp ;    Break ; }
+        mydocument      { goto-mydocument ;     Break ; }
+        code            { goto-code ;   Break ; }
+        dev             { goto-dev ;    Break ; }
+        home            { goto-home ;   Break ; }
+        psdev           { goto-psdev ;  Break ; }
+        scripts         { goto-scripts ;        Break ; }
+        tools           { goto-tools ;  Break ; }
+        sandbox         { goto-sandbox ;        Break ; }
+        wwwroot         { goto-wwwroot ;        Break ; }
+        PSModCore       { goto-PSModCore ;      Break ; }
+        PSModComp       { goto-PSModComp ;      Break ; }
+        moddev          { goto-moddev ; Break ; }
+        Github          { goto-PSModGithu ;     Break ; }
+        Builder         { goto-PSModuleBu ;     Break ; }
+        modpath         { goto-modpath ;        Break ; }
+        help{
+
+            $msg = '
+Type goto <location>
+where location is one of the following:
+'
+            write-host "$msg" -f Cyan
+            ForEach($l in $options){
+                Write-Host "> $l" -f DarkCyan
+            }
+            
+            
+            Break
+        }
+    }
+}
+
+function goto-profile       {  $p = (Get-Item $Profile).DirectoryName ;Write-Host "Pushd => $p" -f Red ; Push-Location $p; }
 function goto-tmp           {  Push-Location ( (New-TemporaryDirectory).Fullname ) ; }
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
 function goto-code          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }

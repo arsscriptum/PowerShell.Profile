@@ -117,8 +117,7 @@ $Script:ProfileIncPath        = Join-Path $Script:PsProfileDevRoot "private"
  Write-Host "✅ $Global:PsProfileDevRoot\PersistentFunctions.ps1"
 . "$Global:PsProfileDevRoot\PersistentAliases.ps1"
  Write-Host "✅ $Global:PsProfileDevRoot\PersistentAliases.ps1"
-. "$Global:PsProfileDevRoot\ModuleUtils.ps1"
- Write-Host "✅ $Global:PsProfileDevRoot\ModuleUtils.ps1"
+
     $Script:BuildDependencies = @( Get-ChildItem -Path $Script:ProfileIncPath -Filter '*.ps1' -File ).Fullname
     $Script:DependencyCount = $Script:BuildDependencies.Count
 
@@ -127,15 +126,14 @@ $Script:ProfileIncPath        = Join-Path $Script:PsProfileDevRoot "private"
     #Dot source the files
     Foreach ($file in $Script:BuildDependencies) {
         Try {
-			Write-Host -f Green "[TRY] $file" -NoNewline
+			Write-Host -f Green "[ok] $file" -NoNewline
             $Depname = (Get-Item -Path $file).Name
             . "$file"
-            
-            
-			
         }  
         Catch {
-            Write-Error -Message "Failed to import file $file $_"
+            Write-Host -n -f DarkRed "[error] "
+            Write-Host -f DarkYellow "Failed to import file $file"
+            Read-Host 'press a key ...'
         }
     }
 

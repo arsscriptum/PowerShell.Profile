@@ -9,20 +9,23 @@
 #̷##>
 
 
-function Import-CodeCastorModules{
+function Import-AllDevelopmentModules{
     try{
-        $m = Get-DefaultModulePath
+        $m = 'C:\DOCUMENTS\PowerShell\Module-Development'
         pushd $m
-        $Modules = (gci . -Directory -Filter 'Module*').Name
+        $Modules = (gci . -Directory -Filter 'PowerShell.Module.*').Name
         ForEach($mod in $Modules){
 
             Write-Host "[IMPORT] " -f DarkRed -NoNewLine
             Write-Host " import modules $mod..............`t`t" -f DarkGray -NoNewLine
-            $null = Import-Module $mod -DisableNameChecking -Scope Global
+            $null = Import-Module $mod -DisableNameChecking -Scope Global -Force -ErrorAction Ignore
             Write-Host "[OK]" -f DarkGreen
         }
+		
     }catch [Exception]{
         $Msg="LOADER Error: $($PSItem.ToString())"
         Write-Error $Msg
-    }
+    }finally{
+		popd
+	}
 }
