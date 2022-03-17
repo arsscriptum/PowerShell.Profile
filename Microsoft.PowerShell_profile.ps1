@@ -9,11 +9,24 @@ function Invoke-PushMod{
      moddev
      $ds = (gci -Directory ).Name
      foreach($d in $ds){
+        Write-Host -n -f DarkCyan "[PushMod] ";Write-Host  -f Cyan "go in $d"
         pushd $d
-        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "pushd $d"
-        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "gpush"
+        Write-Host -n -f DarkCyan "[PushMod] ";Write-Host  -f Cyan "git push"
         $Null = gpush | out-null
-        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "popd "
+        Write-Host -n -f DarkCyan "[PushMod] ";Write-Host  -f Cyan "popd"
+        popd
+        
+     }
+}
+function Invoke-ResetMod{
+     moddev
+     $ds = (gci -Directory ).Name
+     foreach($d in $ds){
+        Write-Host -n -f DarkRed "[ResetMod] ";Write-Host  -f DarkYellow "go in $d"
+        pushd $d
+        Write-Host -n -f DarkRed "[ResetMod] ";Write-Host  -f DarkYellow "git reset --hard"
+        git reset --hard
+        Write-Host -n -f DarkRed "[ResetMod] ";Write-Host  -f DarkYellow "popd"
         popd
      }
 }
