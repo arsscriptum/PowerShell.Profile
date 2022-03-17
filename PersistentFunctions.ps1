@@ -45,6 +45,19 @@ Function Script:Verb-Noun {
 }
 #>
 
+class ChannelProperties
+{
+    #ChannelProperties
+    [string]$Channel = 'ProfilePersistentFunct'
+    [ConsoleColor]$TitleColor = 'Blue'
+    [ConsoleColor]$MessageColor = 'DarkGray'
+    [ConsoleColor]$ErrorColor = 'DarkRed'
+    [ConsoleColor]$SuccessColor = 'DarkGreen'
+    [ConsoleColor]$ErrorDescriptionColor = 'DarkYellow'
+}
+$Script:ChannelProps = [ChannelProperties]::new()
+
+
 $Colors = @('AliceBlue' , 'AntiqueWhite' , 'Aqua' , 'Aquamarine' , 'Azure' , 'Beige' , 'Bisque' , 'Black' , 'BlanchedAlmond' , 'Blue' , 'BlueViolet' , 'Brown' , 'BurlyWood' , 'CadetBlue' , 'Chartreuse' , 'Chocolate' , 'Coral' , 'CornflowerBlue' , 'Cornsilk' , 'Crimson' , 'Cyan' , 'DarkBlue' , 'DarkCyan' , 'DarkGoldenrod' , 'DarkGray' , 'DarkGreen' , 'DarkKhaki' , 'DarkMagenta' , 'DarkOliveGreen' , 'DarkOrange' , 'DarkOrchid' , 'DarkRed' , 'DarkSalmon' , 'DarkSeaGreen' , 'DarkSlateBlue' , 'DarkSlateGray' , 'DarkTurquoise' , 'DarkViolet' , 'DeepPink' , 'DeepSkyBlue' , 'DimGray' , 'DodgerBlue' , 'Firebrick' , 'FloralWhite' , 'ForestGreen' , 'Fuchsia' , 'Gainsboro' , 'GhostWhite' , 'Gold' , 'Goldenrod' , 'Gray' , 'Green' , 'GreenYellow' , 'Honeydew' , 'HotPink' , 'IndianRed' , 'Indigo' , 'Ivory' , 'Khaki' , 'Lavender' , 'LavenderBlush' , 'LawnGreen' , 'LemonChiffon' , 'LightBlue' , 'LightCoral' , 'LightCyan' , 'LightGoldenrodYellow' , 'LightGray' , 'LightGreen' , 'LightPink' , 'LightSalmon' , 'LightSeaGreen' , 'LightSkyBlue' , 'LightSlateGray' , 'LightSteelBlue' , 'LightYellow' , 'Lime' , 'LimeGreen' , 'Linen' , 'Magenta' , 'Maroon' , 'MediumAquamarine' , 'MediumBlue' , 'MediumOrchid' , 'MediumPurple' , 'MediumSeaGreen' , 'MediumSlateBlue' , 'MediumSpringGreen' , 'MediumTurquoise' , 'MediumVioletRed' , 'MidnightBlue' , 'MintCream' , 'MistyRose' , 'Moccasin' , 'NavajoWhite' , 'Navy' , 'OldLace' , 'Olive' , 'OliveDrab' , 'Orange' , 'OrangeRed' , 'Orchid' , 'PaleGoldenrod' , 'PaleGreen' , 'PaleTurquoise' , 'PaleVioletRed' , 'PapayaWhip' , 'PeachPuff' , 'Peru' , 'Pink' , 'Plum' , 'PowderBlue' , 'Purple' , 'Red' , 'RosyBrown' , 'RoyalBlue' , 'SaddleBrown' , 'Salmon' , 'SandyBrown' , 'SeaGreen' , 'SeaShell' , 'Sienna' , 'Silver' , 'SkyBlue' , 'SlateBlue' , 'SlateGray' , 'Snow' , ' SpringGreen' , 'SteelBlue' , 'Tan' , 'Teal' , 'Thistle' , 'Tomato' , 'Transparent' , 'Turquoise' , 'Violet' , 'Wheat' , 'White' , 'WhiteSmoke' , 'Yellow' , 'YellowGreen')
 
 Function Update-SessionEnvironmentVariables {
@@ -327,10 +340,15 @@ function GitExecutable{
 
 Function Save-Profile{
     $Path = (Get-Item -Path $Profile).DirectoryName
-	Write-ChannelMessage "GOING INT $Path"
 
+    Write-ChannelMessage "Go in $Path\Profile"
     pushd "$Path\Profile"
 	
+    $pname = (Get-Item "$Profile").Name
+    $ppath = (Get-Item "$Profile").Fullname
+    Write-ChannelMessage "Copy-Item $Profile to $pname"
+    Copy-Item "$Profile" "$pname"
+
 	ForEach($f in (gci . -file -recurse -filter '*.ps1').Fullname){
 		Write-ChannelMessage "SCRIPT: $f"
 	}

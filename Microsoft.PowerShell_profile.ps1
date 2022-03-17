@@ -1,3 +1,4 @@
+
 <#
   ╓──────────────────────────────────────────────────────────────────────────────────────
   ║   PowerShell Profile
@@ -13,11 +14,23 @@ function Update-FedExZip{
      $Repos = @('PowerShell.Profile', 'PowerShell.Module.TakeOwnership', 'PowerShell.Module.NtRights', 'PowerShell.Module.Downloader',  'PowerShell.Module.Github', 'PowerShell.Module.Shim', 'PowerShell.Module.SetAcl', 'PowerShell.Module.WindowsHost', 'PowerShell.Persistence.ScheduledTasks', 'PowerShell.Module.Terminal', 'PowerShell.Module.FedEx', 'PowerShell.Module.Certificate', 'PowerShell.Module.Core', 'PowerShell.ModuleBuilder',  'PowerShell.Module.Reddit')
      return $Repos
  }
-
-
  function Get-XShellRepos{
      $Repos = @('exploitation-course', 'XServiceUtil', 'As-Exploits', 'X.GitProxy', 'Win32.Qt.Extension', 'X.PE-PDB.Parsers', 'X.HookLib', 'X.Ring0.SDK', 'PowerShell.Sandbox', 'XRemoteSpy', 'X.ProcessHacker', 'X.Tools', 'XSerial', 'XSerialPortUtil', 'xpk')
      return $Repos
+ }
+
+
+ function Invoke-FixSearch{
+    mv "C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.bak" "C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe"
+    &"C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe" "-ServerName:SearchTest"
+    return $?
+ }
+
+ function Invoke-BreakSearch{
+    pk SearchApp
+    mv "C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe" "C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.bak"
+
+    (gci "C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy").Name
  }
 
 
@@ -74,6 +87,43 @@ function Load-AllModules{
     get-module
 }
 
+function Get-CertsTest{
+    cls
+    $List = dir Cert:\LocalMachine\ -Recurse #| where SerialNumber -eq 43BB437D609866286DD839E1D00309F5
+    Foreach($Item in $list){
+        IF ($Item.SerialNumber -eq "43BB437D609866286DD839E1D00309F5") {
+            write-host "Archived       :" $Item.Archived
+            write-host "Extensions     :" ($Item.Extensions).Count
+            write-host "Friendly Name      :" $Item.FriendlyName
+            write-host "Handle             :" $Item.Handle
+            write-host "HasPrivateKey      :" $Item.HasPrivateKey
+            write-host "Issuer             :" $Item.Issuer
+            write-host "Issuer Name        :" $Item.IssuerName
+            write-host "NotAfter           :" $Item.NotAfter
+            write-host "NotBefore          :" $Item.NotBefore
+            write-host "PrivateKey         :" $Item.PrivateKey
+            write-host "PublicKey          :" $Item.PublicKey
+            write-host "RawData Lenght     :" $Item.RawData.Length
+            Write-Host "Serial number      :" $Item.SerialNumber -ForegroundColor Cyan
+            $Match1 = $Item.SerialNumber -match "43BB437D609866286DD839E1D00309F5"
+            $Match2 = $Item.SerialNumber -match "14781bc862e8dc503a559346f5dcc518"
+            if (($Match1 -eq "True") -or ($Match2 -eq "True")) {
+                Write-host "Serialnumber match? Yes" -ForegroundColor Yellow
+            Else {
+                Write-host "Serialnumber match? No " -ForegroundColor Green
+            }
+            Write-host "SignatureAlgorithm :" $Item.SignatureAlgorithm
+            Write-host "Subject            :" $Item.Subject
+            Write-host "SubjectName        :" $Item.SubjectName
+            Write-host "Thumbprint         :" $Item.Thumbprint
+            Write-host "Version            :" $Item.Version
+            Write-host "PSChildName        :" $Item.PSChildName
+            Write-host "PSDrive            :" $Item.PSDrive
+            Write-host "PSIsContainer      :" $Item.PSIsContainer
+        }
+    }
+}
+}
 
 function Get-PSProfileDevelopmentRoot{
 
