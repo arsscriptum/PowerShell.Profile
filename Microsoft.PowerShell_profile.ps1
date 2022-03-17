@@ -5,6 +5,19 @@
   ╙──────────────────────────────────────────────────────────────────────────────────────
  #>
 
+function Invoke-PushMod{
+     moddev
+     $ds = (gci -Directory ).Name
+     foreach($d in $ds){
+        pushd $d
+        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "pushd $d"
+        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "gpush"
+        $Null = gpush | out-null
+        Write-Host -n -b Blue -f DarkYellow "[PushMod] ";Write-Host -b Blue -f White "popd "
+        popd
+     }
+}
+
 function Update-FedExZip{
      remove-item 'C:\Users\radic\www\arsscriptum.github.io\PowerShell.Module.FedEx.zip' ; pushd 'C:\Users\radic\www\arsscriptum.github.io' ; push ; popd ; pushd 'C:\DOCUMENTS\PowerShell\Modules\' ; Compress-Archive .\PowerShell.Module.FedEx -DestinationPath 'C:\Users\radic\www\arsscriptum.github.io\PowerShell.Module.FedEx.zip' ;  ; pushd 'C:\Users\radic\www\arsscriptum.github.io' ; push ; popd ;
 }
