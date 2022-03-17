@@ -667,6 +667,7 @@ function goto-sandbox       {  Write-Host "Pushd => $env:Sandbox" ; Push-Locatio
 function goto-wwwroot       {  Write-Host "Pushd => $env:wwwroot" ; Push-location $env:wwwroot; }
 function goto-PSModCore     {  Write-Host "Pushd => $env:PSModCore" ; Push-location $env:PSModCore; }
 function goto-PSModComp     {  Write-Host "Pushd => $env:PSModComp" ; Push-location $env:PSModComp; }
+function goto-syscfg        {  $scp = "$env:ScriptsRoot\SystemConfiguration\SysConfig"; Write-Host -f Blue "Pushd => $scp" ; Push-Location $scp; }
 function goto-moddev     {  Write-Host "Pushd => $env:moddev" ; Push-location $env:moddev; }
 function goto-PSModGithub     {  Write-Host "Pushd => $env:PSModGithub" ; Push-location $env:PSModGithub; }
 function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" ; Push-location $env:PSModuleBuilder; }

@@ -47,6 +47,7 @@ nppa tools       goto-tools                     'Set Location To $env:ToolsRoot 
 nppa psdev       goto-psdev                     'Set Location To $env:PowerShellScriptsDev !'
 nppa sbox        goto-sandbox                   'Set Location To $env:Sandbox !'
 nppa www         goto-wwwroot                   'Set Location To $env:wwwroot !'
+nppa syscfg      goto-syscfg                    'na'
 nppa moddev      goto-moddev                    'na'
 nppa mydocs      goto-mydocuments               'na'
 nppa doc         goto-mydocuments               'na'
