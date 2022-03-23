@@ -5,6 +5,71 @@
   ╙──────────────────────────────────────────────────────────────────────────────────────
  #>
 
+
+
+function fread {
+    <#
+    .SYNOPSIS
+        
+    .DESCRIPTION
+        
+    .PARAMETER Path
+               
+    .PARAMETER Code
+        
+    .EXAMPLE 
+       
+#>
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param
+    (
+        [ValidateScript({
+        if(-Not ($_ | Test-Path) ){
+            throw "File does not exist"
+        }
+        if(-Not ($_ | Test-Path -PathType Leaf) ){
+            throw "The Path argument must be a file. Directoru paths are not allowed."
+        }
+        return $true 
+        })]
+        [Parameter(Mandatory=$false,Position=0)]
+        [Alias('f', 'p')]
+        [string]$Path,
+        [Parameter(Mandatory=$false,Position=1)]    
+        [Alias('c')]
+        [String]$Code,
+        [Alias('h','?')]
+        [switch]$Help
+    )
+
+    if($Help){
+        $HelpStr = '
+$Code = { 
+    param([String]$line, [int]$index)
+    Write-Host "[Read line no $index] " -f DarkRed
+    Write-Host "$line" -f DarkYellow
+}
+
+ fread ".\dl.txt" -Code $Code
+'   
+        Write-Host "----------------------"  -f DarkRed
+        Write-Host "$HelpStr"  -f DarkYellow
+        Write-Host "----------------------"  -f DarkRed
+        return 
+    }
+
+    $I = 0
+    $SB = [ScriptBlock]::Create($Code)
+    $Content = Get-Content -Path $Path
+    ForEach($Line in $Content){
+        $I++
+        Invoke-Command -ScriptBlock $SB -ArgumentList $Line, $I
+    }
+}
+
+
+
 function Invoke-PushMod{
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -36,10 +101,16 @@ function Invoke-ResetMod{
      }
 }
 
+function Edit-HostFile{
+    $HostFilePath = (Get-HostFilePath)
+    Write-Host -n -f DarkRed "[Edit-HostFile] ";Write-Host  -f DarkYellow "Edit HOST at $HostFilePath"
+    &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" "$HostFilePath"
+}
+New-Alias hostfile -Value Edit-HostFile -Scope Global -Force -ErrorAction Stop -Option ReadOnly,AllScope
+
 function Update-FedExZip{
      remove-item 'C:\Users\radic\www\arsscriptum.github.io\PowerShell.Module.FedEx.zip' ; pushd 'C:\Users\radic\www\arsscriptum.github.io' ; push ; popd ; pushd 'C:\DOCUMENTS\PowerShell\Modules\' ; Compress-Archive .\PowerShell.Module.FedEx -DestinationPath 'C:\Users\radic\www\arsscriptum.github.io\PowerShell.Module.FedEx.zip' ;  ; pushd 'C:\Users\radic\www\arsscriptum.github.io' ; push ; popd ;
 }
-
 
  function Get-PowerShellRepos{
      $Repos = @('PowerShell.Profile', 'PowerShell.Module.TakeOwnership', 'PowerShell.Module.NtRights', 'PowerShell.Module.Downloader',  'PowerShell.Module.Github', 'PowerShell.Module.Shim', 'PowerShell.Module.SetAcl', 'PowerShell.Module.WindowsHost', 'PowerShell.Persistence.ScheduledTasks', 'PowerShell.Module.Terminal', 'PowerShell.Module.FedEx', 'PowerShell.Module.Certificate', 'PowerShell.Module.Core', 'PowerShell.ModuleBuilder',  'PowerShell.Module.Reddit')

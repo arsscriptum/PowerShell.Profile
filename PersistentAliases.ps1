@@ -59,3 +59,6 @@ nppa pscore      goto-PSModCore                 'Set Location To $env:PSModCore 
 nppa psgit       goto-PSModGithub               'Set Location To $env:PSModGithub !'
 nppa psmodbuild  goto-PSModuleBuilder           'Set Location To $env:PSModuleBuilder !'   
 nppa psmb        goto-PSModuleBuilder           'Set Location To $env:PSModuleBuilder !'
+
+nppa videos      goto-myvideos                  'Set Location To $env:MyVideos !'
+nppa vid         goto-myvideos                  'Set Location To $env:MyVideos !'

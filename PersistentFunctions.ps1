@@ -653,7 +653,7 @@ where location is one of the following:
         }
     }
 }
-
+function goto-myvideos      {  Write-Host "Pushd => $env:MyVideos" ; Push-Location $env:MyVideos; }
 function goto-profile       {  $p = (Get-Item $Profile).DirectoryName ;Write-Host "Pushd => $p" -f Red ; Push-Location $p; }
 function goto-tmp           {  Push-Location ( (New-TemporaryDirectory).Fullname ) ; }
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
