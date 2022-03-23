@@ -653,12 +653,15 @@ where location is one of the following:
         }
     }
 }
+
+
 function goto-myvideos      {  Write-Host "Pushd => $env:MyVideos" ; Push-Location $env:MyVideos; }
 function goto-profile       {  $p = (Get-Item $Profile).DirectoryName ;Write-Host "Pushd => $p" -f Red ; Push-Location $p; }
 function goto-tmp           {  Push-Location ( (New-TemporaryDirectory).Fullname ) ; }
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
 function goto-code          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
 function goto-dev           {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
+function goto-programs      {  Write-Host "Pushd => $env:Programs" -f Blue -b White; Push-Location $env:Programs; }
 function goto-home          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location ~; }
 function goto-psdev         {  Write-Host "Pushd => $env:PowerShellScriptsDev" ; Push-Location $env:PowerShellScriptsDev; }
 function goto-scripts       {  Write-Host "Pushd => $env:ScriptsRoot" ; Push-Location $env:ScriptsRoot; }
