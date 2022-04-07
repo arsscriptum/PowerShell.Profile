@@ -6,6 +6,18 @@
  #>
 
 
+function Build-AllModules{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
+        [switch]$Force
+    )
+    pushd 'C:\DOCUMENTS\PowerShell\Module-Development\'
+    $t=((gci .).Name)
+    ForEach($m in $t){pushd "$m"; make -d -i;popd;write-host -f DarkRed "✅ import-module $m"  ; }
+    get-module
+}
+
 
 function fread {
     <#
