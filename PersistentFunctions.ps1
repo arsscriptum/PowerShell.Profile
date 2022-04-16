@@ -343,7 +343,9 @@ Function Save-Profile{
 
     Write-ChannelMessage "Go in $Path\Profile"
     pushd "$Path\Profile"
-	
+    git add *
+    git commit -a -m 'latest'
+	gpush
     $pname = (Get-Item "$Profile").Name
     $ppath = (Get-Item "$Profile").Fullname
     Write-ChannelMessage "Copy-Item $Profile to $pname"
