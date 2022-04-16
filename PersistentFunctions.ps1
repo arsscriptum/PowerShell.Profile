@@ -677,7 +677,8 @@ function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" 
 function goto-modpath       {  $p=Get-UserModulesPath; Set-location $p; }
 function Invoke-Screenshot      { start-process "${Env:ToolsRoot}\screenshot.exe" -WindowStyle hidden ; }
 function Invoke-Sublime         { &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" $args }
-function Invoke-Notepad         { &"C:\Programs\Shims\npad.exe" $args }
+# I HATE NOTEPAD ++ so far
+function Invoke-Notepad         { &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" $args }
 function Invoke-Baretail        { $bt=(get-command baretail).Source;&"$bt" $args }
 function Invoke-Terminal0 { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 nt" ; }
 function Invoke-T0Split { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 split-pane" ; }
