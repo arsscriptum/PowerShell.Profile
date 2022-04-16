@@ -7,6 +7,38 @@
 #>
 
 
+function Invoke-BypassPaywall{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="url", Position=0)]
+        [string]$Url,
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="option")]
+        [switch]$Option        
+    )
+    $Global:NewTmpDir = ( (New-TemporaryDirectory).Fullname ) ; 
+    pushd "$Global:NewTmpDir"
+    $WgetExe = (Getcmd wget.exe).Source
+
+    $a = @("$Url")
+    Write-Host -n -f DarkRed "[BypassPaywall] " ; Write-Host -f DarkYellow "wget $WgetExe url $Url"
+
+    $o = Invoke-Process -ExePath "$WgetExe" -ArgumentList $a 
+    $i = $($o.Error).IndexOf("'")
+    $j = $($o.Error).IndexOf("'", $i+1)
+    $l = $($o.Error).Length
+    $fn = $($o.Error).SubString($i+1, ($j-$i)-1)
+    
+    $fn = Join-Path "$Global:NewTmpDir" "$fn"
+    $in = New-RandomFilename -Extension 'html'
+    Write-Host -n -f DarkRed "[BypassPaywall] " ; Write-Host -f DarkYellow "Filename is $fn --> $in"
+    mv "$fn" "$in"
+    Write-Host -n -f DarkRed "[BypassPaywall] " ; Write-Host -f DarkYellow "start-process "$nf""
+    popd
+    rm "$Global:NewTmpDir" -Force -Recurse
+    start-process "$in"
+}
+
+
 
 function Build-AllModules{
     [CmdletBinding(SupportsShouldProcess)]

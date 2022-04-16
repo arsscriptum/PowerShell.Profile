@@ -657,7 +657,8 @@ where location is one of the following:
 
 function goto-myvideos      {  Write-Host "Pushd => $env:MyVideos" ; Push-Location $env:MyVideos; }
 function goto-profile       {  $p = (Get-Item $Profile).DirectoryName ;Write-Host "Pushd => $p" -f Red ; Push-Location $p; }
-function goto-tmp           {  Push-Location ( (New-TemporaryDirectory).Fullname ) ; }
+function goto-tmp           {  $Global:NewTmpDir = ( (New-TemporaryDirectory).Fullname ) ; Write-Host "New Tmp Directory $Global:NewTmpDir." -f DarkRed ;Write-Host '"ResetTmpDir" to delete' -f DarkYellow ; Push-Location "$Global:NewTmpDir" ; }
+function ResetTmpDir        {  Write-Host "ResetTmp Delete => $Global:NewTmpDir" ; rm "$Global:NewTmpDir" -Force -Recurse ;  }
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
 function goto-code          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
 function goto-dev           {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
