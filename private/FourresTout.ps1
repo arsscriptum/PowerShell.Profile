@@ -39,6 +39,42 @@ function Invoke-BypassPaywall{
 }
 
 
+function Load-AllModules{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
+        [switch]$Force,
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
+        [switch]$Push        
+    )
+    write-host -f DarkRed "=================================================="
+    write-host -f DarkRed "                    IMPORT MODULES                "
+    write-host -f DarkRed "=================================================="
+    pushd 'C:\DOCUMENTS\PowerShell\Module-Development\'
+    $t=((gci . -Directory).Name)
+    ForEach($m in $t){
+        write-host -n -f DarkGreen "✅ " 
+        import-module "$m" -Force -Scope 'Global' -SkipEditionCheck -DisableNameChecking
+        write-host  "$m`t`t"
+
+    }
+}
+
+
+function Clean-NuGetPackages{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
+        [switch]$Force,
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
+        [switch]$Push        
+    )
+    write-host -f DarkRed "Clean-NuGetPackages"
+    pushd 'C:\DOCUMENTS\PowerShell\Module-Development\'
+    $f = (gci . -File).Fullname
+    ForEach($ff in $f){ rmf $ff }
+}
+
 
 function Build-AllModules{
     [CmdletBinding(SupportsShouldProcess)]
@@ -50,7 +86,7 @@ function Build-AllModules{
     )
     pushd 'C:\DOCUMENTS\PowerShell\Module-Development\'
     $t=((gci .).Name)
-    ForEach($m in $t){pushd "$m"; make -d -i;if($Push){gpush;};popd;write-host -f DarkRed "✅ import-module $m"  ; }
+    ForEach($m in $t){pushd "$m"; make -d -i -Documentation -Publish -Push;if($Push){gpush;};popd;write-host -f DarkRed "✅ import-module $m"  ; }
     get-module
 }
 
