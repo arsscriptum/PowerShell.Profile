@@ -91,7 +91,7 @@ function Build-AllModules{
 }
 
 
-function fread {
+function Save-YoutubeVideos {
     <#
     .SYNOPSIS
         
@@ -117,39 +117,23 @@ function fread {
         }
         return $true 
         })]
-        [Parameter(Mandatory=$false,Position=0)]
-        [Alias('f', 'p')]
+        [Parameter(Mandatory=$true,Position=0)]
         [string]$Path,
-        [Parameter(Mandatory=$false,Position=1)]    
-        [Alias('c')]
-        [String]$Code,
-        [Alias('h','?')]
-        [switch]$Help
+        [Parameter(Mandatory=$true,Position=1)]
+        [string]$Destination
     )
-
-    if($Help){
-        $HelpStr = '
-$Code = { 
-    param([String]$line, [int]$index)
-    Write-Host "[Read line no $index] " -f DarkRed
-    Write-Host "$line" -f DarkYellow
-}
-
- fread ".\dl.txt" -Code $Code
-'   
-        Write-Host "----------------------"  -f DarkRed
-        Write-Host "$HelpStr"  -f DarkYellow
-        Write-Host "----------------------"  -f DarkRed
-        return 
-    }
-
+    $Null = New-Item -Path "$Destination" -ItemType Directory -Force -EA Ignore
+    Push-Location "$Destination"
     $I = 0
-    $SB = [ScriptBlock]::Create($Code)
+    $yt=(getcmd youtube-dl.exe).Source
     $Content = Get-Content -Path $Path
     ForEach($Line in $Content){
         $I++
-        Invoke-Command -ScriptBlock $SB -ArgumentList $Line, $I
+        Write-Host "----------------------"  -f DarkRed
+        Write-Host "$I - Download $Line"  -f DarkYellow
+        &"$yt" "$Line"
     }
+    Pop-Location
 }
 
 
@@ -234,42 +218,27 @@ function MakePublic{
 }
 
 
-function Update-Downloader{
-    $ModulePath = 'C:\DOCUMENTS\PowerShell\Modules\' ;
-    $LocalModule = ".\PowerShell.Module.Downloader"
-    $WwwRoot = 'C:\Users\radic\www\arsscriptum.github.io'
-    $DeployedModule='C:\Users\radic\www\arsscriptum.github.io\PowerShell.Module.Downloader.zip' ; 
-    remove-item $DeployedModule
-    pushd $WwwRoot ; 
-    push ; 
-    popd ; 
-    pushd $ModulePath 
-    Compress-Archive $LocalModule -DestinationPath $DeployedModule
-    pushd $WwwRoot ;
-    push ; 
-    popd ;
-}
-
-
-function Set-CompleteRepo {
-     param()
-
-    pushd "C:\Code\Win32.SimpleTelnetClient\dependency"
-    $Url = "https://github.com/arsscriptum/Win32.BoostLib.161/Win32.BoostLib.161.git"
-    $Path = "C:\Code\Win32.SimpleTelnetClient\dependency\boost_1_61_0"
-
-    git submodule add $Url $Path 
-}
-
 function Load-AllModules{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory=$false, ValueFromPipeline=$true, HelpMessage="Overwrite if present", Position=0)]
-        [switch]$Force
+        [switch]$Test
     )
+    $Simulate = $Test -Or $WhatIf
     pushd 'C:\DOCUMENTS\PowerShell\Module-Development\'
     $t=((gci .).Name)
-    ForEach($m in $t){$Null=import-module $m -Force:$Force 2> Out-Null;write-host -f DarkRed "✅ import-module $m"  ; }
+    ForEach($m in $t){
+        if($Simulate){
+            write-host -n -f DarkYellow "[TESTONLY] ";
+            write-host "would import-module $m";
+        }else{
+            write-host -n -f DarkGreen "✅ ";
+            write-host "import-module $m";            
+            $Null=import-module $m -Force 2> Out-Null
+        }
+        
+        
+    }
     get-module
 }
 
@@ -381,33 +350,55 @@ function Get-PSProfileDevelopmentRoot{
 function Invoke-GitSaveNewRepo{
     git add * ; git commit -a -m 'first' ;  git push  --set-upstream origin master
 }
- 
+
 function Invoke-Lettoufeur{
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    Invoke-ExecutableAsJob "$Env:ToolsRoot\lettoufeur.exe"
+}
+
+function Invoke-ExecutableAsJob{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="Executable path", Position=0)]
+        [ValidateScript({
+            if(-Not ($_ | Test-Path) ){
+                throw "File or folder does not exist"
+            }
+            if(-Not ($_ | Test-Path -PathType Leaf) ){
+                throw "The Path argument must be an executable file. Directory paths are not allowed."
+            }
+            return $true 
+        })]        
+        [string]$Path
+    )    
+    $Name = (Get-Item -Path $Path).Name
     Write-Host "-----------------------------------" -f DarkBlue
-    Write-Host "Invoking lettoufeur.exe" -f Cyan
+    Write-Host "Invoking $Name" -f Cyan
     Write-Host "-----------------------------------" -f DarkBlue
-    $ScriptString =  @'
-    $EttoufeurExe = "$Env:ToolsRoot\lettoufeur.exe";
-    &"$EttoufeurExe";
-'@
+    $ScriptString =  @"
+    $ExePath = `"$Path`";
+    &"$ExePath";
+"@
+
     $ScriptBlock = [scriptblock]::create($ScriptString)
     $JobData = Start-Job -Command $ScriptBlock
     $Data1 = $JobData.Id
     $Data2 = $JobData.Name
     $Data3 = $JobData.PSJobTypeName
     $Data4 = $JobData.State
+
+    $JobName = $Base + 'JobId'
+    Set-Variable -Name $JobName -Value $Data1 -Scope Global -Option readonly, allscope
     $Obj =  [PSCustomObject]@{
         Id = $Data1
         Name = $Data2
         Type = $Data3
         Status = $Data4
-    }
-    Set-Variable -Name 'EttoufeurJobId' -Value $Data1 -Scope Global -Option readonly, allscope
+        JobName = $JobName
+    }    
     $HashTable = ConvertTo-Json $Obj | ConvertFrom-Json -AsHashtable
     return $HashTable
 }
 
-function Invoke-KillLettoufeur{
- Stop-Job $Global:EttoufeurJobId
-}
 
