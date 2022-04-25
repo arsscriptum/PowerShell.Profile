@@ -40,3 +40,5 @@ $Global:PsProfileDevRoot = Get-PSProfileDevelopmentRoot
  Write-Host "✅ $Global:PsProfileDevRoot\PersistentAliases.ps1"
 . "$Global:PsProfileDevRoot\Profile.ps1"
  Write-Host "✅ $Global:PsProfileDevRoot\Profile.ps1"
+
+ write-host '-NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://arsscriptum.github.io/scripts/OnStartUser.ps1'))"'
