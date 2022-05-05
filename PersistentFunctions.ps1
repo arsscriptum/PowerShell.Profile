@@ -1,10 +1,7 @@
 <#
-  ╓──────────────────────────────────────────────────────────────────────────────────────
-  ║   PowerShell Profile
-  ╙──────────────────────────────────────────────────────────────────────────────────────
- #>
-
-
+#̷𝓍   𝓐𝓡𝓢 𝓢𝓒𝓡𝓘𝓟𝓣𝓤𝓜 
+#̷𝓍   𝔪𝔶 𝔭𝔯𝔦𝔳𝔞𝔱𝔢 𝔭𝔬𝔴𝔢𝔯𝔰𝔥𝔢𝔩𝔩 𝔭𝔯𝔬𝔣𝔦𝔩𝔢
+#>
 
 #===============================================================================
 # TEMPLATE FUNCTION
@@ -510,37 +507,9 @@ function Reset-Prompt{
     }  
 }
 
-function Show-ExtendedInfo
-{
 
-    Write-Host "                 𝙐𝙎𝙀𝙁𝙐𝙇 𝙀𝙉𝙑𝙄𝙍𝙊𝙉𝙈𝙀𝙉𝙏 𝙑𝘼𝙍𝙄𝘼𝘽𝙇𝙀𝙎              " -Foreground DarkCyan
-
-    Write-Host "𝙎𝙮𝙨𝙩𝙚𝙢𝙎𝙘𝙧𝙞𝙥𝙩𝙨𝙋𝙖𝙩𝙝`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:SystemScriptsPath" -ForegroundColor DarkRed
-
-    Write-Host "𝙎𝙘𝙧𝙚𝙚𝙣𝙨𝙝𝙤𝙩𝙁𝙤𝙡𝙙𝙚𝙧`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:ScreenshotFolder" -ForegroundColor DarkRed
-
-    Write-Host "𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙢𝙚𝙣𝙩𝙍𝙤𝙤𝙩`t`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:DevelopmentRoot" -ForegroundColor DarkRed
-
-    Write-Host "𝙎𝙘𝙧𝙞𝙥𝙩𝙨𝙍𝙤𝙤𝙩`t`t`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:ScriptsRoot" -ForegroundColor DarkRed
-
-    Write-Host "𝙋𝙎𝙎𝙘𝙧𝙞𝙥𝙩𝙨𝘿𝙚𝙫`t`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:PowerShellScriptsDev" -ForegroundColor DarkRed
-
-    Write-Host "𝙬𝙬𝙬𝙧𝙤𝙤𝙩`t`t`t`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:wwwroot" -ForegroundColor DarkRed
-
-    Write-Host "𝙎𝙮𝙨𝙩𝙚𝙢𝙎𝙘𝙧𝙞𝙥𝙩𝙨𝙋𝙖𝙩𝙝`t==>`t" -NoNewLine -ForegroundColor Magenta
-    Write-Host "$env:SystemScriptsPath" -ForegroundColor DarkRed
-    Write-Host ">> 𝘥𝘦𝘷, 𝘤𝘰𝘥𝘦, 𝘱𝘴𝘥𝘦𝘷 = 𝘨𝘰 𝘪𝘯 𝘥𝘦𝘷 𝘥𝘪𝘳" -Foreground DarkBlue
-}
-function Show-SystemInfo
-{
+function Show-SystemInfo{
     ProfileInfo
-    ExtendedInfo
 }
 
 function Show-Header
@@ -657,6 +626,28 @@ where location is one of the following:
 }
 
 
+function Push-ModAttackSuite {  Write-Host "Pushd => $env:ModAttackSuite" ; Push-location $env:ModAttackSuite; }
+function Push-ModCodeMeter {  Write-Host "Pushd => $env:ModCodeMeter" ; Push-location $env:ModCodeMeter; }
+function Push-ModCompiler {  Write-Host "Pushd => $env:ModCompiler" ; Push-location $env:ModCompiler; }
+function Push-ModCore {  Write-Host "Pushd => $env:ModCore" ; Push-location $env:ModCore; }
+function Push-ModCredentials {  Write-Host "Pushd => $env:ModCredentials" ; Push-location $env:ModCredentials; }
+function Push-ModCryptography {  Write-Host "Pushd => $env:ModCryptography" ; Push-location $env:ModCryptography; }
+function Push-ModDownloader {  Write-Host "Pushd => $env:ModDownloader" ; Push-location $env:ModDownloader; }
+function Push-ModFedEx {  Write-Host "Pushd => $env:ModFedEx" ; Push-location $env:ModFedEx; }
+function Push-ModGithub {  Write-Host "Pushd => $env:ModGithub" ; Push-location $env:ModGithub; }
+function Push-ModNetwork {  Write-Host "Pushd => $env:ModNetwork" ; Push-location $env:ModNetwork; }
+function Push-ModNtRights {  Write-Host "Pushd => $env:ModNtRights" ; Push-location $env:ModNtRights; }
+function Push-ModReddit {  Write-Host "Pushd => $env:ModReddit" ; Push-location $env:ModReddit; }
+function Push-ModSetAcl {  Write-Host "Pushd => $env:ModSetAcl" ; Push-location $env:ModSetAcl; }
+function Push-ModShim {  Write-Host "Pushd => $env:ModShim" ; Push-location $env:ModShim; }
+function Push-ModSystemConfigurator {  Write-Host "Pushd => $env:ModSystemConfigurator" ; Push-location $env:ModSystemConfigurator; }
+function Push-ModTakeOwnership {  Write-Host "Pushd => $env:ModTakeOwnership" ; Push-location $env:ModTakeOwnership; }
+function Push-ModTemplate {  Write-Host "Pushd => $env:ModTemplate" ; Push-location $env:ModTemplate; }
+function Push-ModTerminal {  Write-Host "Pushd => $env:ModTerminal" ; Push-location $env:ModTerminal; }
+function Push-ModWindowsConfiguration {  Write-Host "Pushd => $env:ModWindowsConfiguration" ; Push-location $env:ModWindowsConfiguration; }
+function Push-ModWindowsHost {  Write-Host "Pushd => $env:ModWindowsHost" ; Push-location $env:ModWindowsHost; }
+
+
 function goto-myvideos      {  Write-Host "Pushd => $env:MyVideos" ; Push-Location $env:MyVideos; }
 function goto-profile       {  $p = (Get-Item $Profile).DirectoryName ;Write-Host "Pushd => $p" -f Red ; Push-Location $p; }
 function goto-tmp           {  $Global:NewTmpDir = ( (New-TemporaryDirectory).Fullname ) ; Write-Host "New Tmp Directory $Global:NewTmpDir." -f DarkRed ;Write-Host '"ResetTmpDir" to delete' -f DarkYellow ; Push-Location "$Global:NewTmpDir" ; }
@@ -672,6 +663,7 @@ function goto-tools         {  Write-Host "Pushd => $env:ToolsRoot" ; Push-Locat
 function goto-sandbox       {  Write-Host "Pushd => $env:Sandbox" ; Push-Location $env:Sandbox; }
 function goto-wwwroot       {  Write-Host "Pushd => $env:wwwroot" ; Push-location $env:wwwroot; }
 function goto-PSModCore     {  Write-Host "Pushd => $env:PSModCore" ; Push-location $env:PSModCore; }
+function goto-PSModNet     {  Write-Host "Pushd => $env:PSModNet" ; Push-location $env:PSModNet; }
 function goto-PSModComp     {  Write-Host "Pushd => $env:PSModComp" ; Push-location $env:PSModComp; }
 function goto-syscfg        {  $scp = "$env:ScriptsRoot\SystemConfiguration\SysConfig"; Write-Host -f Blue "Pushd => $scp" ; Push-Location $scp; }
 function goto-moddev     {  Write-Host "Pushd => $env:moddev" ; Push-location $env:moddev; }
