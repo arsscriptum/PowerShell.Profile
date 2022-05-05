@@ -41,4 +41,8 @@ $Global:PsProfileDevRoot = Get-PSProfileDevelopmentRoot
 . "$Global:PsProfileDevRoot\Profile.ps1"
  Write-Host "✅ $Global:PsProfileDevRoot\Profile.ps1"
 
- write-host '-NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://arsscriptum.github.io/scripts/OnStartUser.ps1'))"'
+write-host '-NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://arsscriptum.github.io/scripts/OnStartUser.ps1'))"'
+import-module PowerShell.Module.Core -SkipEditionCheck -DisableNameChecking -Force
+#import Github
+#import Crypto
+#import Reddit
