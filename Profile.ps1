@@ -35,6 +35,12 @@ Foreach ($file in $Script:BuildDependencies) {
     }
 }
 
+
+$AlTest = Get-Alias 'makeprod' -ErrorAction Ignore
+if($AlTest -eq $Null){
+     modbuild ; .\Setup.ps1 -Alias ; popd
+}
+
 New-Alias -name ex -Value "x"
 if($Global:ProfileErrors -eq 0){ cls }else{  Write-Host "IMPORTING DEPENDENCIES ERRORS ==> $Global:ProfileErrors" -f DarkYellow ; }
 Show-Header
