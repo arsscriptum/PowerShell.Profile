@@ -368,8 +368,8 @@ Function Update-NetInfo{
     if($Data.StatusCode -eq 200){ 
         Remove-Variable 'NETInfoTable' -ErrorAction ignore -Force
         $NETInfoTable = ($Data.Content | ConvertFrom-Json -AsHashtable)
+        New-Variable -Name 'NETInfoTable' -Scope Global -Option ReadOnly,AllScope -Value $NETInfoTable -ErrorAction Ignore
         $NETInfoTable
-        New-Variable -Name 'NETInfoTable' -Scope Global -Option ReadOnly,AllScope -Value $NETInfoTable
     }
 }
 
