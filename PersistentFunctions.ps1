@@ -690,6 +690,7 @@ function goto-devwork           {  Write-Host "Pushd => $env:DevelopmentWork" ; 
 function goto-programs      {  Write-Host "Pushd => $env:Programs" -f Blue -b White; Push-Location $env:Programs; }
 function goto-home          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location ~; }
 function goto-psdev         {  Write-Host "Pushd => $env:PowerShellScriptsDev" ; Push-Location $env:PowerShellScriptsDev; }
+function goto-HDev         {  Write-Host "Pushd => $env:HDev" ; Push-Location $env:HDev; }
 function goto-scripts       {  Write-Host "Pushd => $env:ScriptsRoot" ; Push-Location $env:ScriptsRoot; }
 function goto-tools         {  Write-Host "Pushd => $env:ToolsRoot" ; Push-Location $env:ToolsRoot; }
 function goto-sandbox       {  Write-Host "Pushd => $env:Sandbox" ; Push-Location $env:Sandbox; }
