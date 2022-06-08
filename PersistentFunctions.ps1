@@ -514,7 +514,7 @@ function Show-SystemInfo{
 
 function Show-Header
 {
-    cls
+
     Write-Host "`n`n"
     Write-Host "                                         𝒜𝓇𝓈 𝒮𝒸𝓇𝒾𝓅𝓉𝓊𝓂: 𝒯𝒽ℯ 𝒜𝓇𝓉 ℴ𝒻 𝒞ℴ𝒹ℯ" -f DarkRed
     Write-Host "                                       𝘸𝘪𝘯𝘥𝘰𝘸𝘴 𝘵𝘦𝘳𝘮𝘪𝘯𝘢𝘭 - 𝘱𝘰𝘸𝘦𝘳𝘴𝘩𝘦𝘭𝘭 - 𝘥𝘰𝘴 - 𝘷𝘴" -f DarkRed
@@ -589,13 +589,14 @@ function goto{
     )
 
 
-    $options = @('profile','tmp', 'mydocument', 'code', 'dev', 'home', 'psdev', 'scripts', 'tools', 'sandbox', 'wwwroot', 'PSModCore', 'PSModComp', 'moddev', 'Github', 'Builder', 'modpath')
+    $options = @('profile','tmp', 'mydocument', 'code', 'dev','devwork', 'home', 'psdev', 'scripts', 'tools', 'sandbox', 'wwwroot', 'PSModCore', 'PSModComp', 'moddev', 'Github', 'Builder', 'modpath')
     Switch ($Location) {
         profile         { goto-profile ;    Break ; }
         tmp             { goto-tmp ;    Break ; }
         mydocument      { goto-mydocument ;     Break ; }
         code            { goto-code ;   Break ; }
         dev             { goto-dev ;    Break ; }
+        devwork             { goto-devwork ;    Break ; }
         home            { goto-home ;   Break ; }
         psdev           { goto-psdev ;  Break ; }
         scripts         { goto-scripts ;        Break ; }
@@ -626,6 +627,20 @@ where location is one of the following:
 }
 
 
+function Extract-Fonts{
+    pushd "x:\Data\Fonts"
+    $mods = (gci . -File)
+    ForEach($m in $mods){ $name = $m.Name ; $shortname = $name; $fullpath = $m.FullName ; $envval = "$PWD\font$shortname" ;  write-host "Expand-Archive -Path $fullpath -DestinationPath $envval" -f Red ; Expand-Archive -Path $fullpath -DestinationPath "x:\Data\AllFOnts" ;}
+    ForEach($m in $mods){ $name = $m.Name ; $shortname = $name; $fullpath = $m.FullName ; $envval = "$PWD\font$shortname" ;  write-host "Expand-Archive -Path $fullpath -DestinationPath $envval" -f Red ; Expand-Archive -Path $fullpath -DestinationPath $envval ;}
+}
+
+<#
+funtion MakePathAndEnvVal{
+    pushd "C:\DOCUMENTS\PowerShell\Module-Development"
+    $mods = (gci . -Directory)
+    ForEach($m in $mods){ $name = $m.Name ; $shortname = $name.substring(18); $shortname; $fullpath = $m.FullName ; $fullpath ; $envval = "Mod$shortname" ; $envval; Set-EnvironmentVariable -Name $envval -Value $fullpath -Scope "User" }
+}#>
+
 function Push-ModAttackSuite {  Write-Host "Pushd => $env:ModAttackSuite" ; Push-location $env:ModAttackSuite; }
 function Push-ModCodeMeter {  Write-Host "Pushd => $env:ModCodeMeter" ; Push-location $env:ModCodeMeter; }
 function Push-ModCompiler {  Write-Host "Pushd => $env:ModCompiler" ; Push-location $env:ModCompiler; }
@@ -655,6 +670,7 @@ function ResetTmpDir        {  Write-Host "ResetTmp Delete => $Global:NewTmpDir"
 function goto-mydocuments   {  $mydocuments = [environment]::getfolderpath("mydocuments") ; Write-Host "Pushd => $mydocuments" ; Push-Location $mydocuments; }
 function goto-code          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
 function goto-dev           {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location $env:DevelopmentRoot; }
+function goto-devwork           {  Write-Host "Pushd => $env:DevelopmentWork" ; Push-Location $env:DevelopmentWork; }
 function goto-programs      {  Write-Host "Pushd => $env:Programs" -f Blue -b White; Push-Location $env:Programs; }
 function goto-home          {  Write-Host "Pushd => $env:DevelopmentRoot" ; Push-Location ~; }
 function goto-psdev         {  Write-Host "Pushd => $env:PowerShellScriptsDev" ; Push-Location $env:PowerShellScriptsDev; }
@@ -671,9 +687,9 @@ function goto-PSModGithub     {  Write-Host "Pushd => $env:PSModGithub" ; Push-l
 function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" ; Push-location $env:PSModuleBuilder; }
 function goto-modpath       {  $p=Get-UserModulesPath; Set-location $p; }
 function Invoke-Screenshot      { start-process "${Env:ToolsRoot}\screenshot.exe" -WindowStyle hidden ; }
-function Invoke-Sublime         { &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" $args }
-# I HATE NOTEPAD ++ so far
-function Invoke-Notepad         { &"${Env:ProgramFiles}\Sublime Text 3\sublime_text.exe" $args }
+function Invoke-Sublime         { &"${Env:Programs}\SublimeText\sublime_text.exe" $args }
+function Invoke-Subl         { &"${Env:Subl}" $args }
+function Invoke-Notepad         { &"${Env:Subl}" $args }
 function Invoke-Baretail        { $bt=(get-command baretail).Source;&"$bt" $args }
 function Invoke-Terminal0 { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 nt" ; }
 function Invoke-T0Split { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 split-pane" ; }

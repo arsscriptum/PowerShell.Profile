@@ -16,7 +16,7 @@ $BuildModuleScript = (Get-ItemProperty $RegistryPath -Name 'BuildModuleScript').
 
 nppa make       "$BuildScript"                 'na'
 nppa makeall    "$BuildModuleScript"           'na'
-
+nppa 'Write-ChannelMessage' 'Log' 'na'
 #===============================================================================
 # ALIASES
 #===============================================================================
@@ -33,7 +33,7 @@ nppa sysinfo     SystemInfo                     'Get System Information !'
 nppa cmdlist     Get-CommandsAndAliases         'Get Custom Module Command list!'
 nppa tail        Invoke-Baretail                'na'
 nppa subl        Invoke-Sublime                 'na'
-nppa edit        Invoke-Sublime                 'na'
+nppa edit        Invoke-Subl                 'na'
 nppa termadm     Invoke-TerminalAdmin           'na'
 nppa term        Invoke-Terminal                'na'
 nppa ss          Invoke-Screenshot              'na'
@@ -41,7 +41,9 @@ nppa read        ReadFile                       'na'
 nppa Getcmd      Get-command                    'na'
 nppa Getmod      Get-module                     'na'
 nppa home        goto-home                      'Set Location To $Home !'
+
 nppa dev         goto-dev                       'Set Location To $env:DevelopmentRoot !'
+nppa devwork         goto-devwork                       'Set Location To $env:DevelopmentRoot !'
 nppa code        goto-code                      'Set Location To $env:DevelopmentRoot !'
 nppa gs          goto-scripts                   'Set Location To $env:ScriptsRoot !'
 nppa tools       goto-tools                     'Set Location To $env:ToolsRoot !'
@@ -65,7 +67,7 @@ nppa prog        goto-programs                  'Set Location To $env:Programs !
 nppa videos      goto-myvideos                  'Set Location To $env:MyVideos !'
 nppa vid         goto-myvideos                  'Set Location To $env:MyVideos !'
 
-
+nppa d         Set-Location               'na'
 
 New-Alias ModAttackSuite -Value "Push-ModAttackSuite" -Description "Push-location $env:ModAttackSuite" -Scope Global -Force -ErrorAction Stop -Option ReadOnly,AllScope
 New-Alias ModCodeMeter -Value "Push-ModCodeMeter" -Description "Push-location $env:ModCodeMeter" -Scope Global -Force -ErrorAction Stop -Option ReadOnly,AllScope
