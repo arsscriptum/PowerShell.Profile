@@ -657,6 +657,39 @@ funtion MakePathAndEnvVal{
     ForEach($m in $mods){ $name = $m.Name ; $shortname = $name.substring(18); $shortname; $fullpath = $m.FullName ; $fullpath ; $envval = "Mod$shortname" ; $envval; Set-EnvironmentVariable -Name $envval -Value $fullpath -Scope "User" }
 }#>
 
+function Get-SublimeTextPath{
+ [CmdletBinding(SupportsShouldProcess)]
+    param()    
+    
+    $GlobalVar    = (Get-Variable -Name "Subl" -ValueOnly -ErrorAction Ignore)
+    $IsSetGlobal  = Test-Path -Path "$GlobalVar" -PathType Leaf
+    $IsSetEnv     = Test-Path -Path "$ENV:Subl" -PathType Leaf
+    Write-Verbose "SublimeTextPath as Global Var : $IsSetGlobal"
+    Write-Verbose "SublimeTextPath in Environment: $IsSetEnv"
+    if($IsSetEnv){
+        Write-Verbose "SublimeTextPath is `"$ENV:Subl`""
+        return "$ENV:Subl"
+    }
+    if($IsSetGlobal){
+        Write-Verbose "SublimeTextPath is `"$GlobalVar`""
+        return "$GlobalVar"
+    }
+    $Paths = @(gci "$Env:ProgramFiles" -Directory | where Name -match 'Sublime').FullName
+    Write-Verbose "Searching `"Sublime`" in ENV.ProgramFiles -> $($Paths.Count)`n$Paths"
+    ForEach($p in $Paths){
+        $exe = Join-Path $p 'sublime_text.exe'
+        $exists = Test-Path -Path "$exe" -PathType Leaf
+        if($exists){
+            Write-Verbose "SublimeTextPath is `"$p`""
+
+            Set-EnvironmentVariable -Name "Subl" -Value "$exe" -Scope "Session"
+            [System.Environment]::SetEnvironmentVariable("Subl",$exe,[System.EnvironmentVariableTarget]::User)
+            Set-Variable -Name "Subl" -Value "$exe" -Option ReadOnly,AllScope,Constant -Scope Global -Force -ErrorAction Ignore
+            return $exe
+        }
+    }
+}
+
 function Push-ModAttackSuite {  Write-Host "Pushd => $env:ModAttackSuite" ; Push-location $env:ModAttackSuite; }
 function Push-ModCodeMeter {  Write-Host "Pushd => $env:ModCodeMeter" ; Push-location $env:ModCodeMeter; }
 function Push-ModCompiler {  Write-Host "Pushd => $env:ModCompiler" ; Push-location $env:ModCompiler; }
@@ -704,9 +737,9 @@ function goto-PSModGithub     {  Write-Host "Pushd => $env:PSModGithub" ; Push-l
 function goto-PSModuleBuilder     {  Write-Host "Pushd => $env:PSModuleBuilder" ; Push-location $env:PSModuleBuilder; }
 function goto-modpath       {  $p=Get-UserModulesPath; Set-location $p; }
 function Invoke-Screenshot      { start-process "${Env:ToolsRoot}\screenshot.exe" -WindowStyle hidden ; }
-function Invoke-Sublime         { &"${Env:Programs}\SublimeText\sublime_text.exe" $args }
-function Invoke-Subl         { &"${Env:Subl}" $args }
-function Invoke-Notepad         { &"${Env:Subl}" $args }
+function Invoke-Sublime         { $Exe = Get-SublimeTextPath ; &"$Exe" $args }
+function Invoke-Subl         { Invoke-Sublime $args }
+function Invoke-Notepad         { Invoke-Sublime $args }
 function Invoke-Baretail        { $bt=(get-command baretail).Source;&"$bt" $args }
 function Invoke-Terminal0 { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 nt" ; }
 function Invoke-T0Split { start-process "C:\Programs\Shims\terminal.exe" -ArgumentList "-w 0 split-pane" ; }

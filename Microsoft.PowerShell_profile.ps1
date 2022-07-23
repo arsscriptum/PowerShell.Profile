@@ -35,6 +35,8 @@ New-Alias -Name 'psdevroot' -Value 'Get-PSProfileDevelopmentRoot' -Scope 'Global
 
 $Global:PsProfileDevRoot = Get-PSProfileDevelopmentRoot
 
+Push-Location $Global:PsProfileDevRoot
+
 . "$Global:PsProfileDevRoot\PersistentFunctions.ps1"
  Write-Host "✅ $Global:PsProfileDevRoot\PersistentFunctions.ps1"
 . "$Global:PsProfileDevRoot\PersistentAliases.ps1"
@@ -42,6 +44,7 @@ $Global:PsProfileDevRoot = Get-PSProfileDevelopmentRoot
 . "$Global:PsProfileDevRoot\Profile.ps1"
  Write-Host "✅ $Global:PsProfileDevRoot\Profile.ps1"
 
+Pop-Location
 
 #write-host '-NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://arsscriptum.github.io/scripts/OnStartUser.ps1'))"'
 import-module PowerShell.Module.Core -SkipEditionCheck -DisableNameChecking -Force
